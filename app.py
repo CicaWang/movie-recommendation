@@ -66,27 +66,53 @@ def get_hot_movies():
 def get_upcoming_movies():
     """获取即将上映的电影"""
     try:
-        url = f'{TMDB_BASE_URL}/movie/upcoming'
+        from datetime import datetime, timedelta
+
+        # 获取当前日期和未来一年的日期
+        today = datetime.now().strftime('%Y-%m-%d')
+        future_date = (datetime.now() + timedelta(days=365)).strftime('%Y-%m-%d')
+
+        # 使用 discover API 而不是 upcoming，可以更精确地控制日期范围
+        url = f'{TMDB_BASE_URL}/discover/movie'
         params = {
             'api_key': TMDB_API_KEY,
             'language': 'zh-CN',
             'region': 'CN',
+            'sort_by': 'popularity.desc',
+            'primary_release_date.gte': today,
+            'primary_release_date.lte': future_date,
+            'with_release_type': '2|3',  # 2=Theatrical, 3=Theatrical Limited
             'page': 1
         }
         response = requests.get(url, params=params, timeout=10)
         data = response.json()
 
         movies = []
-        for movie in data.get('results', [])[:15]:
-            movies.append({
-                'id': movie['id'],
-                'title': movie['title'],
-                'poster': f"https://image.tmdb.org/t/p/w500{movie['poster_path']}" if movie.get('poster_path') else None,
-                'rating': movie.get('vote_average', 0),
-                'release_date': movie.get('release_date', ''),
-                'overview': movie.get('overview', ''),
-                'source': 'TMDB'
-            })
+        today_dt = datetime.now()
+
+        for movie in data.get('results', []):
+            release_date = movie.get('release_date', '')
+
+            # 只包含未来上映的电影
+            if release_date:
+                try:
+                    release_dt = datetime.strptime(release_date, '%Y-%m-%d')
+                    # 只显示今天之后上映的电影
+                    if release_dt >= today_dt:
+                        movies.append({
+                            'id': movie['id'],
+                            'title': movie['title'],
+                            'poster': f"https://image.tmdb.org/t/p/w500{movie['poster_path']}" if movie.get('poster_path') else None,
+                            'rating': movie.get('vote_average', 0),
+                            'release_date': release_date,
+                            'overview': movie.get('overview', ''),
+                            'source': 'TMDB'
+                        })
+
+                        if len(movies) >= 15:
+                            break
+                except ValueError:
+                    continue
 
         return jsonify({
             'success': True,
