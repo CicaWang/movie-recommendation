@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影推荐系统 - 每日观影指南</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 电影推荐系统</h1>
+            <p class="subtitle">发现精彩电影，规划观影节奏</p>
+        </header>
+
+        <!-- 导航标签 -->
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="daily">今日推荐</button>
+            <button class="tab-btn" data-tab="hot">热门电影</button>
+            <button class="tab-btn" data-tab="upcoming">即将上映</button>
+            <button class="tab-btn" data-tab="preference">类型推荐</button>
+        </nav>
+
+        <!-- 今日推荐 -->
+        <div class="tab-content active" id="daily">
+            <div class="section-header">
+                <h2>今日推荐</h2>
+                <p class="date" id="today-date"></p>
+            </div>
+            <div class="loading" id="daily-loading">加载中...</div>
+            <div class="movie-grid" id="daily-movies"></div>
+        </div>
+
+        <!-- 热门电影 -->
+        <div class="tab-content" id="hot">
+            <div class="section-header">
+                <h2>热门电影排行</h2>
+            </div>
+            <div class="loading" id="hot-loading">加载中...</div>
+            <div class="movie-grid" id="hot-movies"></div>
+        </div>
+
+        <!-- 即将上映 -->
+        <div class="tab-content" id="upcoming">
+            <div class="section-header">
+                <h2>即将上映</h2>
+            </div>
+            <div class="loading" id="upcoming-loading">加载中...</div>
+            <div class="movie-grid" id="upcoming-movies"></div>
+        </div>
+
+        <!-- 类型偏好推荐 -->
+        <div class="tab-content" id="preference">
+            <div class="section-header">
+                <h2>选择你喜欢的类型</h2>
+            </div>
+            <div class="genre-selector">
+                <label class="genre-chip">
+                    <input type="checkbox" value="动作">
+                    <span>动作</span>
+                </label>
+                <label class="genre-chip">
+                    <input type="checkbox" value="喜剧">
+                    <span>喜剧</span>
+                </label>
+                <label class="genre-chip">
+                    <input type="checkbox" value="爱情">
+                    <span>爱情</span>
+                </label>
+                <label class="genre-chip">
+                    <input type="checkbox" value="科幻">
+                    <span>科幻</span>
+                </label>
+                <label class="genre-chip">
+                    <input type="checkbox" value="恐怖">
+                    <span>恐怖</span>
+                </label>
+                <label class="genre-chip">
+                    <input type="checkbox" value="惊悚">
+                    <span>惊悚</span>
+                </label>
+                <label class="genre-chip">
+                    <input type="checkbox" value="剧情">
+                    <span>剧情</span>
+                </label>
+                <label class="genre-chip">
+                    <input type="checkbox" value="犯罪">
+                    <span>犯罪</span>
+                </label>
+                <label class="genre-chip">
+                    <input type="checkbox" value="冒险">
+                    <span>冒险</span>
+                </label>
+                <label class="genre-chip">
+                    <input type="checkbox" value="奇幻">
+                    <span>奇幻</span>
+                </label>
+                <label class="genre-chip">
+                    <input type="checkbox" value="悬疑">
+                    <span>悬疑</span>
+                </label>
+                <label class="genre-chip">
+                    <input type="checkbox" value="战争">
+                    <span>战争</span>
+                </label>
+            </div>
+            <button class="btn-primary" id="get-recommendations">获取推荐</button>
+            <div class="loading hidden" id="preference-loading">加载中...</div>
+            <div class="movie-grid" id="preference-movies"></div>
+        </div>
+
+        <!-- 电影详情模态框 -->
+        <div class="modal hidden" id="movie-modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="modal-body" id="modal-body"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>数据来源: TMDB & 豆瓣电影 | 每日更新</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
